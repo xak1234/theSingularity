@@ -86,6 +86,12 @@
             height: auto;
             z-index: 10;
         }
+        .fallback-message {
+            display: none;
+            color: red;
+            text-align: center;
+            font-size: 1.2em;
+        }
     </style>
 </head>
 <body>
@@ -95,7 +101,13 @@
             <div class="text-overlay">Explorations Beyond The Universe <br> Reason and Death</div>
         </div>
     </div>
-    <video id="introVideo" src="https://github.com/xak1234/theSingularity/blob/main/cosmicmaster.mp4" controls></video>
+    <video id="introVideo" controls>
+        <source src="https://raw.githubusercontent.com/xak1234/theSingularity/main/cosmicmaster.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div id="fallbackMessage" class="fallback-message">
+        Unable to play the video. <a href="https://tinyurl.com/asingularity">Click here</a> to continue.
+    </div>
     <div class="email">
         <a href="mailto:light@thesingularity.online">light@thesingularity.online</a>
     </div>
@@ -103,13 +115,25 @@
     <script>
         function playVideo() {
             const video = document.getElementById('introVideo');
-            video.style.display = 'block'; // Show the video
-            video.play();
+            const fallbackMessage = document.getElementById('fallbackMessage');
 
-            video.onended = function() {
-                window.location.href = "https://tinyurl.com/asingularity"; // Redirect after video ends
-            };
+            // Attempt to play the video
+            if (video.canPlayType('video/mp4')) {
+                video.style.display = 'block'; // Show the video
+                video.play().catch(() => {
+                    video.style.display = 'none'; // Hide the video if playback fails
+                    fallbackMessage.style.display = 'block'; // Show the fallback message
+                });
+
+                // Redirect after the video ends
+                video.onended = function() {
+                    window.location.href = "https://tinyurl.com/asingularity";
+                };
+            } else {
+                fallbackMessage.style.display = 'block'; // Show fallback message if video is unsupported
+            }
         }
     </script>
 </body>
 </html>
+
